@@ -33,5 +33,5 @@ Tests interactivos de autoevaluación para estudiantes de primer semestre de pre
 
 ---
 
-*Creado para estudiantes de preparatoria - Diciembre 2024*
+*Creado para estudiantes de preparatoria - Diciembre 2025*
 
