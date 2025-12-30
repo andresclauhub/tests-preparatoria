@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Unidad 1 - Primer Semestre</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .student-info {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .student-info h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .student-info input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        .student-info input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .materia-selector {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .materia-selector h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .materia-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .materia-btn {
+            padding: 15px;
+            border: 2px solid #667eea;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: #667eea;
+        }
+        
+        .materia-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .materia-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .quiz-container.active {
+            display: block;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1a1a2e;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+        
+        .option.selected {
+            border-color: #667eea;
+            background: #eef2ff;
+        }
+        
+        .option.correct {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+        
+        .option.incorrect {
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+        
+        .option input {
+            margin-right: 12px;
+            accent-color: #667eea;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .score-circle.excellent {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .score-circle.good {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+        
+        .score-circle.needs-work {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        
+        .score-circle.poor {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        .score-number {
+            font-size: 3rem;
+        }
+        
+        .score-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .results h2 {
+            color: #1a1a2e;
+            margin-bottom: 10px;
+        }
+        
+        .results p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        
+        .results-details {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .result-stat {
+            text-align: center;
+        }
+        
+        .result-stat .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .result-stat .label {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .retry-btn {
+            margin-top: 25px;
+            padding: 15px 40px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .retry-btn:hover {
+            background: #5a6fd6;
+            transform: translateY(-2px);
+        }
+        
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        
+        .question-counter {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .materia-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-details {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Test de Conocimientos - Unidad 1</h1>
+            <p>Primer Semestre de Preparatoria</p>
+        </div>
+        
+        <div class="student-info">
+            <h2>👤 Información del Estudiante</h2>
+            <input type="text" id="studentName" placeholder="Escribe tu nombre completo aquí">
+        </div>
+        
+        <div class="materia-selector" id="materiaSelector">
+            <h2>📖 Selecciona la materia a evaluar:</h2>
+            <div class="materia-buttons">
+                <button class="materia-btn" onclick="selectMateria('ciencias_sociales')">🌍 Ciencias Sociales I</button>
+                <button class="materia-btn" onclick="selectMateria('cultura_digital')">💻 Cultura Digital I</button>
+                <button class="materia-btn" onclick="selectMateria('humanidades')">📚 Humanidades I</button>
+                <button class="materia-btn" onclick="selectMateria('ingles')">🇬🇧 Inglés I</button>
+                <button class="materia-btn" onclick="selectMateria('lengua')">✍️ Lengua y Comunicación I</button>
+                <button class="materia-btn" onclick="selectMateria('materia_interacciones')">⚗️ La Materia y sus Interacciones I</button>
+                <button class="materia-btn" onclick="selectMateria('matematicas')">🔢 Pensamiento Matemático I</button>
+            </div>
+        </div>
+        
+        <div class="quiz-container" id="quizContainer">
+            <div class="question-counter" id="questionCounter">Pregunta 1 de 10</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div id="questionsContainer"></div>
+            <button class="submit-btn" id="submitBtn" onclick="submitQuiz()">📊 Ver Resultados</button>
+        </div>
+        
+        <div class="results" id="resultsContainer">
+            <div class="score-circle" id="scoreCircle">
+                <div class="score-number" id="scoreNumber">0%</div>
+                <div class="score-label">Calificación</div>
+            </div>
+            <h2 id="resultTitle">¡Resultado!</h2>
+            <p id="resultMessage">Tu calificación del examen</p>
+            <div class="results-details">
+                <div class="result-stat">
+                    <div class="number" id="correctCount">0</div>
+                    <div class="label">Correctas</div>
+                </div>
+                <div class="result-stat">
+                    <div class="number" id="incorrectCount">0</div>
+                    <div class="label">Incorrectas</div>
+                </div>
+                <div class="result-stat">
+                    <div class="number" id="totalQuestions">10</div>
+                    <div class="label">Total</div>
+                </div>
+            </div>
+            <button class="retry-btn" onclick="retry()">🔄 Intentar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        // Base de datos de preguntas por materia
+        const quizzes = {
+            ciencias_sociales: {
+                title: "Ciencias Sociales I",
+                questions: [
+                    {
+                        question: "¿Qué estudian las ciencias sociales?",
+                        options: ["La naturaleza y los animales", "Al ser humano en sociedad", "Los números y ecuaciones", "Los planetas y estrellas"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué disciplina estudia el pasado de la humanidad?",
+                        options: ["Economía", "Geografía", "Historia", "Sociología"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Qué elemento de la sociedad incluye valores, tradiciones y lengua compartidos?",
+                        options: ["Territorio", "Población", "Cultura", "Economía"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Qué institución es responsable de la crianza y socialización primaria?",
+                        options: ["La escuela", "El gobierno", "La familia", "Los medios de comunicación"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Qué método de investigación consiste en preguntar a muchas personas?",
+                        options: ["Observación", "Encuesta", "Trabajo de campo", "Análisis de documentos"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuál es el orden correcto de los tipos de sociedad según la historia?",
+                        options: ["Industrial → Nómada → Agrícola", "Nómada → Agrícola → Industrial → Postindustrial", "Agrícola → Nómada → Industrial", "Postindustrial → Industrial → Agrícola"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué disciplina estudia la producción y distribución de bienes?",
+                        options: ["Antropología", "Economía", "Ciencia Política", "Psicología Social"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué estudia la ciencia política?",
+                        options: ["Las culturas humanas", "El poder y las instituciones políticas", "El comportamiento del mercado", "Las estructuras de la sociedad"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué institución se encarga de hacer el censo de población en México?",
+                        options: ["SEP", "INEGI", "SAT", "IMSS"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuántas entidades federativas tiene México?",
+                        options: ["28", "30", "32", "34"],
+                        correct: 2
+                    }
+                ]
+            },
+            cultura_digital: {
+                title: "Cultura Digital I",
+                questions: [
+                    {
+                        question: "¿Qué es la informática?",
+                        options: ["El estudio de los animales", "La ciencia del procesamiento automático de información", "El estudio de la historia", "La ciencia de los minerales"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuál es la unidad mínima de información en una computadora?",
+                        options: ["Byte", "Kilobyte", "Bit", "Megabyte"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Qué componente es el 'cerebro' de la computadora?",
+                        options: ["RAM", "Disco duro", "CPU", "Tarjeta de video"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Qué tipo de dispositivo es el teclado?",
+                        options: ["De salida", "De entrada", "De almacenamiento", "De procesamiento"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué indica el protocolo HTTPS?",
+                        options: ["Una página lenta", "Una conexión segura", "Un error de red", "Una página antigua"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuántos bytes tiene un kilobyte?",
+                        options: ["100", "1000", "1024", "512"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Qué es un sistema operativo?",
+                        options: ["Un tipo de virus", "Software que administra la computadora", "Un navegador web", "Un documento de texto"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuál es un ejemplo de software de aplicación?",
+                        options: ["Windows", "Controlador de impresora", "Microsoft Word", "Linux"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Qué extensión tienen los archivos de imagen?",
+                        options: [".docx", ".mp3", ".jpg", ".pdf"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Cuál es la diferencia entre RAM y disco duro?",
+                        options: ["No hay diferencia", "RAM es permanente, disco duro es temporal", "RAM es temporal, disco duro es permanente", "Ambos son procesadores"],
+                        correct: 2
+                    }
+                ]
+            },
+            humanidades: {
+                title: "Humanidades I",
+                questions: [
+                    {
+                        question: "¿Qué estudian las humanidades?",
+                        options: ["Los números", "La condición humana", "Los animales", "Las plantas"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué disciplina humanística estudia los textos escritos como novelas y poesía?",
+                        options: ["Historia", "Filosofía", "Literatura", "Ética"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Qué es la cultura?",
+                        options: ["Solo el arte", "Conjunto de conocimientos, creencias y tradiciones compartidas", "Solo el idioma", "Solo la religión"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué estudia la ética?",
+                        options: ["La belleza", "El bien y el mal", "El pasado", "El lenguaje"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuántas lenguas indígenas tiene México aproximadamente?",
+                        options: ["20", "40", "68", "100"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Qué tipo de cultura incluye tradiciones y creencias?",
+                        options: ["Material", "Inmaterial", "Física", "Natural"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué valor se refiere a decir la verdad?",
+                        options: ["Respeto", "Honestidad", "Solidaridad", "Tolerancia"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué disciplina busca respuestas a las grandes preguntas de la existencia?",
+                        options: ["Historia", "Arte", "Filosofía", "Lingüística"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Qué es la identidad?",
+                        options: ["Un documento oficial", "Lo que nos hace únicos como individuos o grupos", "Un tipo de música", "Una tradición"],
+                        correct: 1
+                    },
+                    {
+                        question: "Las humanidades desarrollan pensamiento crítico, comunicación y:",
+                        options: ["Cálculo", "Empatía", "Programación", "Agricultura"],
+                        correct: 1
+                    }
+                ]
+            },
+            ingles: {
+                title: "Inglés I",
+                questions: [
+                    {
+                        question: "¿Cómo se dice 'Buenos días' en inglés?",
+                        options: ["Good night", "Good afternoon", "Good morning", "Good evening"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Cuál es la respuesta correcta a 'How are you?'",
+                        options: ["My name is...", "I'm fine, thank you", "I'm from Mexico", "Nice to meet you"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cómo se dice 'Mucho gusto' en inglés?",
+                        options: ["Thank you", "You're welcome", "Nice to meet you", "Goodbye"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Cuál es el pronombre para 'Ella' en inglés?",
+                        options: ["He", "She", "It", "They"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cómo se dice 'De nada' en inglés?",
+                        options: ["Please", "Thank you", "You're welcome", "Excuse me"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Cuál saludo es informal?",
+                        options: ["Good morning", "Good afternoon", "Hi", "How do you do?"],
+                        correct: 2
+                    },
+                    {
+                        question: "'I'm from Mexico' significa:",
+                        options: ["Vivo en México", "Soy de México", "Me gusta México", "Estudio en México"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuál es la contracción de 'I am'?",
+                        options: ["I've", "I'll", "I'm", "I'd"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Cómo se pregunta '¿Cuántos años tienes?' en inglés?",
+                        options: ["What's your name?", "Where are you from?", "How old are you?", "What do you do?"],
+                        correct: 2
+                    },
+                    {
+                        question: "'See you later' significa:",
+                        options: ["Adiós", "Buenas noches", "Nos vemos luego", "Mucho gusto"],
+                        correct: 2
+                    }
+                ]
+            },
+            lengua: {
+                title: "Lengua y Comunicación I",
+                questions: [
+                    {
+                        question: "¿Quién envía el mensaje en el proceso de comunicación?",
+                        options: ["El receptor", "El emisor", "El canal", "El código"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué función del lenguaje se usa para informar objetivamente?",
+                        options: ["Emotiva", "Apelativa", "Referencial", "Poética"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Cuál es la diferencia entre lengua y habla?",
+                        options: ["No hay diferencia", "Lengua es el sistema, habla es el uso individual", "Habla es el sistema, lengua es el uso individual", "Ambos son lo mismo que lenguaje"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué tipo de comunicación incluye gestos y expresiones faciales?",
+                        options: ["Verbal", "Oral", "No verbal", "Escrita"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Qué función del lenguaje busca influir en el receptor?",
+                        options: ["Referencial", "Emotiva", "Apelativa", "Fática"],
+                        correct: 2
+                    },
+                    {
+                        question: "El ruido es un ejemplo de barrera de comunicación:",
+                        options: ["Semántica", "Psicológica", "Física", "Cultural"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Qué estilo de comunicación expresa opiniones respetando a los demás?",
+                        options: ["Pasivo", "Agresivo", "Asertivo", "Evasivo"],
+                        correct: 2
+                    },
+                    {
+                        question: "Las variantes diatópicas se refieren a diferencias:",
+                        options: ["Por edad", "Por región geográfica", "Por situación social", "Por nivel educativo"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué tipo de comunicación no verbal estudia el uso del espacio?",
+                        options: ["Kinésica", "Proxémica", "Paralingüística", "Icónica"],
+                        correct: 1
+                    },
+                    {
+                        question: "La retroalimentación es:",
+                        options: ["El mensaje original", "La respuesta del receptor al emisor", "El canal de comunicación", "El código utilizado"],
+                        correct: 1
+                    }
+                ]
+            },
+            materia_interacciones: {
+                title: "La Materia y sus Interacciones I",
+                questions: [
+                    {
+                        question: "¿Qué es la materia?",
+                        options: ["Solo los sólidos", "Todo lo que tiene masa y ocupa espacio", "Solo los líquidos", "La luz y el sonido"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuál es una propiedad específica de la materia?",
+                        options: ["Masa", "Volumen", "Densidad", "Peso"],
+                        correct: 2
+                    },
+                    {
+                        question: "La fórmula de la densidad es:",
+                        options: ["D = V/m", "D = m × V", "D = m/V", "D = m + V"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿A qué temperatura hierve el agua al nivel del mar?",
+                        options: ["0°C", "50°C", "100°C", "200°C"],
+                        correct: 2
+                    },
+                    {
+                        question: "Un objeto flota cuando su densidad es:",
+                        options: ["Mayor que la del líquido", "Igual que la del líquido", "Menor que la del líquido", "No importa la densidad"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Cuál es la unidad del peso?",
+                        options: ["Kilogramo", "Newton", "Gramo", "Metro"],
+                        correct: 1
+                    },
+                    {
+                        question: "El punto de fusión es cuando un sólido pasa a:",
+                        options: ["Gas", "Líquido", "Plasma", "Sólido más duro"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué sustancia tiene una densidad de 1 g/cm³?",
+                        options: ["Aceite", "Hierro", "Agua", "Oro"],
+                        correct: 2
+                    },
+                    {
+                        question: "La masa de un objeto en la Luna:",
+                        options: ["Cambia", "Es cero", "Es la misma que en la Tierra", "Se duplica"],
+                        correct: 2
+                    },
+                    {
+                        question: "¿Por qué flota el hielo en el agua?",
+                        options: ["Porque es más denso", "Porque es menos denso", "Porque es más pesado", "No flota"],
+                        correct: 1
+                    }
+                ]
+            },
+            matematicas: {
+                title: "Pensamiento Matemático I",
+                questions: [
+                    {
+                        question: "¿Cuál es el resultado de (-5) + (-3)?",
+                        options: ["-8", "8", "-2", "2"],
+                        correct: 0
+                    },
+                    {
+                        question: "¿Cuál es el resultado de (-4) × (-2)?",
+                        options: ["-8", "8", "-6", "6"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuánto es 2³?",
+                        options: ["6", "8", "5", "9"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuál es la raíz cuadrada de 25?",
+                        options: ["4", "5", "6", "7"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Qué tipo de número es √2?",
+                        options: ["Natural", "Entero", "Racional", "Irracional"],
+                        correct: 3
+                    },
+                    {
+                        question: "¿Cuánto es 1/2 + 1/3?",
+                        options: ["2/5", "5/6", "1/5", "2/6"],
+                        correct: 1
+                    },
+                    {
+                        question: "Según la jerarquía de operaciones, ¿qué se resuelve primero en 3 + 4 × 2?",
+                        options: ["La suma", "La multiplicación", "Da igual", "Ninguna"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuál es el resultado de 5⁰?",
+                        options: ["0", "1", "5", "Indefinido"],
+                        correct: 1
+                    },
+                    {
+                        question: "¿Cuánto es 3/4 × 2/3?",
+                        options: ["6/12", "1/2", "5/7", "6/7"],
+                        correct: 1
+                    },
+                    {
+                        question: "El símbolo ℤ representa los números:",
+                        options: ["Naturales", "Enteros", "Racionales", "Irracionales"],
+                        correct: 1
+                    }
+                ]
+            }
+        };
+        
+        let currentMateria = null;
+        let answers = {};
+        
+        function selectMateria(materia) {
+            const studentName = document.getElementById('studentName').value.trim();
+            if (!studentName) {
+                alert('Por favor, escribe tu nombre antes de comenzar.');
+                return;
+            }
+            
+            currentMateria = materia;
+            answers = {};
+            
+            // Actualizar botones
+            document.querySelectorAll('.materia-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Mostrar quiz
+            const quizContainer = document.getElementById('quizContainer');
+            quizContainer.classList.add('active');
+            document.getElementById('resultsContainer').classList.remove('show');
+            
+            // Generar preguntas
+            generateQuestions(quizzes[materia].questions);
+            updateProgress();
+        }
+        
+        function generateQuestions(questions) {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+            
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.id = `question-${index}`;
+                
+                let optionsHTML = '';
+                q.options.forEach((opt, optIndex) => {
+                    optionsHTML += `
+                        <label class="option" onclick="selectOption(${index}, ${optIndex})">
+                            <input type="radio" name="q${index}" value="${optIndex}">
+                            ${opt}
+                        </label>
+                    `;
+                });
+                
+                questionDiv.innerHTML = `
+                    <div class="question-text">${index + 1}. ${q.question}</div>
+                    <div class="options">
+                        ${optionsHTML}
+                    </div>
+                `;
+                
+                container.appendChild(questionDiv);
+            });
+            
+            document.getElementById('totalQuestions').textContent = questions.length;
+        }
+        
+        function selectOption(questionIndex, optionIndex) {
+            answers[questionIndex] = optionIndex;
+            
+            // Marcar como seleccionada
+            const question = document.getElementById(`question-${questionIndex}`);
+            question.querySelectorAll('.option').forEach((opt, idx) => {
+                opt.classList.remove('selected');
+                if (idx === optionIndex) {
+                    opt.classList.add('selected');
+                }
+            });
+            
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const questions = quizzes[currentMateria].questions;
+            const answered = Object.keys(answers).length;
+            const progress = (answered / questions.length) * 100;
+            
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('questionCounter').textContent = 
+                `Respondidas: ${answered} de ${questions.length}`;
+        }
+        
+        function submitQuiz() {
+            const questions = quizzes[currentMateria].questions;
+            const answeredCount = Object.keys(answers).length;
+            
+            if (answeredCount < questions.length) {
+                if (!confirm(`Solo has respondido ${answeredCount} de ${questions.length} preguntas. ¿Deseas continuar?`)) {
+                    return;
+                }
+            }
+            
+            let correct = 0;
+            
+            questions.forEach((q, index) => {
+                const question = document.getElementById(`question-${index}`);
+                const options = question.querySelectorAll('.option');
+                
+                options.forEach((opt, optIdx) => {
+                    if (optIdx === q.correct) {
+                        opt.classList.add('correct');
+                    } else if (answers[index] === optIdx) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                
+                if (answers[index] === q.correct) {
+                    correct++;
+                }
+            });
+            
+            const percentage = Math.round((correct / questions.length) * 100);
+            
+            // Mostrar resultados
+            document.getElementById('scoreNumber').textContent = `${percentage}%`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('incorrectCount').textContent = questions.length - correct;
+            
+            const scoreCircle = document.getElementById('scoreCircle');
+            scoreCircle.className = 'score-circle';
+            
+            const resultTitle = document.getElementById('resultTitle');
+            const resultMessage = document.getElementById('resultMessage');
+            
+            if (percentage >= 90) {
+                scoreCircle.classList.add('excellent');
+                resultTitle.textContent = '🎉 ¡Excelente!';
+                resultMessage.textContent = '¡Felicidades! Dominas muy bien este tema.';
+            } else if (percentage >= 70) {
+                scoreCircle.classList.add('good');
+                resultTitle.textContent = '👍 ¡Buen trabajo!';
+                resultMessage.textContent = 'Tienes un buen nivel, pero puedes mejorar.';
+            } else if (percentage >= 50) {
+                scoreCircle.classList.add('needs-work');
+                resultTitle.textContent = '📚 Necesitas repasar';
+                resultMessage.textContent = 'Te recomendamos estudiar más los apuntes.';
+            } else {
+                scoreCircle.classList.add('poor');
+                resultTitle.textContent = '💪 ¡Ánimo!';
+                resultMessage.textContent = 'Necesitas estudiar más. ¡Tú puedes!';
+            }
+            
+            document.getElementById('resultsContainer').classList.add('show');
+            document.getElementById('submitBtn').disabled = true;
+            
+            // Scroll a resultados
+            document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function retry() {
+            answers = {};
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.querySelector('input').checked = false;
+            });
+            document.getElementById('resultsContainer').classList.remove('show');
+            document.getElementById('submitBtn').disabled = false;
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+
